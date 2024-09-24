@@ -5,10 +5,10 @@ require ('dotenv').config(); // Load environment variables from.env file
 
 // Connect to PostgreSQL database
 const pool = new Pool({ // Replace with your own credentials
-  user: 'postgres',
-  password: 'your_password',
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
   host: 'localhost',
-  database: 'your_database_name'
+  database: 'employee_db'
 });
 
 // Main function to handle user interactions
