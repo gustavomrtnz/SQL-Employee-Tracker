@@ -1,11 +1,11 @@
 --TODO: create in formation to be inserted into tables from schema.sql
-INSERT INTO department (name)
+INSERT INTO departments (name)
 VALUES  ("Engineering"),
         ("Finance"),
         ("Sales"),
         ("Legal");
 
-INSERT INTO role(title, salary,department_id)
+INSERT INTO roles (title, salary,department_id)
 VALUES  ("Software Engineer", 80000, 1),
         ("Project Manager", 100000, 1),
         ("Accountant", 70000, 2),
@@ -15,7 +15,7 @@ VALUES  ("Software Engineer", 80000, 1),
         ("Legal Advisor", 90000, 4),
         ("Head of Legal", 120000, 4);
 
-INSERT INTO employee(first_name, last_name, role_id, manager_id)
+INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES  ("John", "Doe", 1, NULL),
         ("Jane", "Smith", 2, 1),
         ("Michael", "Johnson", 3, 2),
