@@ -1,7 +1,7 @@
 // IMPORT Dependencies
 const inquirer = require("inquirer");
 const { Pool } = require('pg');
-require ('dotenv').config(); // Load environment variables from.env file
+require('dotenv').config(); // Load environment variables from.env file
 
 // Connect to PostgreSQL database
 const pool = new Pool({ // Replace with your own credentials
@@ -10,171 +10,200 @@ const pool = new Pool({ // Replace with your own credentials
   host: 'localhost',
   database: 'employee_db'
 });
+pool.connect()
 
 // Main function to handle user interactions
-function startingQuestion() {
+let startingQuestion = function() {
   inquirer.prompt([ // Prompt the user to choose an action
-      {
-          type: 'list',
-          name: 'intro',
-          message: 'What would you like to do?',
-          choices:[
-              'View All Employees',
-              'Add Employee',
-              'Update Employee Role',
-              'View All Roles',
-              'Add Role',
-              'View All Departments',
-              'Add Department',
-              'Quit'
-          ]
-      }
-  ])
-  .then(answers => { // Switch based on the user's choice
-    switch(answers.intro) {
-      case 'View All Employees':
-        viewEmployees();
-        break;
-      case 'Add Employee':
-        addEmployee();
-        break;
-      case 'Update Employee Role':
-        updateEmployeeRole();
-        break;
-      case 'View All Roles':
-        viewRoles();
-        break;
-      case 'Add Role':
-        addRole();
-        break;
-      case 'View All Departments':
-        viewDepartments();
-        break;
-      case 'Add Department':
-        addDepartment();
-        break;
-      case 'Quit':
-        pool.end();
-        break;
-    }
-  });
-};
-
-function viewDepartments() { // Function to view all departments
-  pool.query('SELECT id, name FROM departments', (err, res) => { // Query the database for all departments
-    if (err) throw err;
-    console.table(res.rows); // Display the results in a table
-    startingQuestion();
-  });
-};
-
-function viewRoles() {
-  pool.query('SELECT id, title, salary FROM roles', (err, res) => { //
-    if (err) throw err;
-    console.table(res.rows);
-    startingQuestion();
-  });
-};
-
-function viewEmployees() { // Function to view all employees
-  pool.query('SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON employees.department_id = departments.id', (err, res) => {
-    if (err) throw err;
-    console.table(res.rows);
-    startingQuestion();
-  });
-};
-
-function addDepartment() { // Function to add a new department
-  inquirer.prompt([
-      {
-          type: 'input',
-          name: 'department',
-          message: 'Enter the name of the department you would like to add:'
-      }
-  ])
- .then(answers => { // Insert the new department into the database
-   pool.query('INSERT INTO departments (name) VALUES ($1)', [answers.department], (err, res) => {
-     if (err) throw err;
-     console.log('Department added successfully!');
-     startingQuestion();
-   });
-  });
-};
-
-function addRole() { // Function to add a new role
-  inquirer.prompt([
-      {
-          type: 'input',
-          name: 'title',
-          message: 'Enter the title of the role you would like to add:'
-      },
-      {
-          type: 'input',
-          name:'salary',
-          message: 'Enter the salary for this role:',
-          validate: function(value) {
-            if (!isNaN(parseFloat(value)) && isFinite(value)) { // Check if the input is a valid number
-              return true;
-            }
-            return 'Please enter a valid number.';
-          }
-      }
-  ])
- .then(answers => {
-   pool.query('INSERT INTO roles (title, salary) VALUES ($1, $2)', [answers.title, answers.salary], (err, res) => {
-     if (err) throw err;
-     console.log('Role added successfully!');
-     startingQuestion();
-   });
-  });
-};
-
-function addEmployee() { // Function to add a new employee
-  inquirer.prompt([
-      {
-          type: 'input',
-          name: 'first_name',
-          message: 'Enter the first name of the employee:'
-      },
-      {
-          type: 'input',
-          name: 'last_name',
-          message: 'Enter the last name of the employee:'
-      },
-      {
-          type: 'list',
-          name: 'role_id',
-          message: 'Choose the role for this employee:',
-          choices: function() {
-            return pool.query('SELECT id, title FROM roles') // Query the database for all roles
-             .then(res => res.rows.map(row => ({name: row.title, value: row.id })));
-          }
-      },
-      {
-          type: 'list',
-          name: 'department_id',
-          message: 'Choose the department for this employee:',
-          choices: function() {
-            return pool.query('SELECT id, name FROM departments')
-             .then(res => res.row.map(row => ({name: row.name, value: row.id })));
-          }
-      }])
-      .then(answers => {
-        pool.query('INSERT INTO employees (first_name, last_name, role_id, department_id) VALUES ($1, $2, $3, $4)', [answers.first_name, answers.last_name, answers.role_id, answers.department_id], (err, res) => {
-          if (err) throw err;
-          console.log('Employee added successfully!');
+    {
+      type: 'list',
+      name: 'intro',
+      message: 'What would you like to do?',
+      choices: [
+        'View all Departments',
+        'View all Roles',
+        'View all employees',
+        'Add a new department',
+        'Add a new role',
+        'Add a new employee',
+        'Update an employee role',
+        'Exit',
+      ]
+      
+    }]).then((answers) => { // Handle user's choice based on the chouces 
+      // if the user chooses to view all departments
+      if (answers.intro === 'View all Departments') {
+        //then query the database for all departments and display them in a table
+        db.query('SELECT * FROM departments').then((res) => {
+          console.table(res.rows);
           startingQuestion();
         });
-      });
-    };
+        // if the user chooses to view all roles
+      } else if (answers.intro === 'View all Roles') {
+        //then query the database for all roles and display them in a table
+        db.query('SELECT * FROM roles').then((res) => {
+          console.table(res.rows);
+          startingQuestion();
+        });
+          // if the user chooses to view all employees
+      } else if (answers.intro === 'View all employees') {
+        //then query the database for all employees and display them in a table
+        db.query('SELECT * FROM employees').then((res) => {
+          console.table(res.rows);
+          startingQuestion();
+        });
+          // if the user chooses to update an employee role
+      } else if (answers.intro === 'Add a new department') {
+        // then prompt the user to enter the name of the new department and add it to the database
+        inquirer.prompt([
+          {
+            type: 'input',
+            name: 'name',
+            message: 'Enter the name of the new department:',
+          }
+        ]).then((answers) => {
+          // Add the new department to the database
+          db.query('INSERT INTO departments (name) VALUES ($1)', [answers.name]).then(() => {
+            console.log('Department added successfully.');
+            startingQuestion();
+          });
+        });
+          // if the user chooses to add a new role
+      } else if (answers.intro === 'Add a new role') {
+        // then prompt the user to enter the title of the new role, salary, and choose a department
+        pool.query('SELECT * FROM departments').then((res) => {
+          // use the map function to create an array of department objects for the choices
+          const departments = res.rows.map((dept) => ({
+            name: dept.name,
+            value: dept.departments_id
+          }));
+          // prompt the user to enter the title of the new role, salary, and choose a department
+          inquirer.prompt([
+            {
+              type: 'input',
+              name: 'title',
+              message: 'Enter the title of the new role:',
+            },
+            {
+              type: 'input',
+              name: 'salary',
+              message: 'Enter the salary of the new role:',
+            },
+            {
+              type: 'list',
+              name: 'department_id',
+              message: 'Choose the department:',
+              choices: departments
+            }
+          ]
+          )
+          // then add the new role to the database
+            .then((answers) => {
+              db.query('INSERT INTO roles (title, salary, department_id) VALUES ($1, $2, $3)', [answers.title, answers.salary, answers.department_id]).then(() => {
+                console.log('Role added successfully.');
+                startingQuestion();
+              });
+            });
+        })
+        // 8. if the user chooses to add a new employee
+      } else if (answers.intro === 'Add a new employee') {
+        pool.query('SELECT * FROM roles').then((res) => {
+          // use the map function to create an array of role objects for the choices
+          const roles = res.rows.map((role) => ({
+            name: role.title,
+            value: role.roles_id
+          }));
+          // use the map function to create an array of employee objects for the choices
+          pool.query('SELECT * FROM employees').then((res) => {
+            const managers = res.rows.map((emp) => ({
+              name: emp.first_name + '' + emp.last_name,
+              value: emp.employee_id
+            }));
+            // 8. then prompt the user to enter the first name, last name, role, and manager (leave blank for none)
+            inquirer.prompt([
+              {
+                type: 'input',
+                name: 'first_name',
+                message: 'Enter the first name of the new employee:',
+              },
+              {
+                type: 'input',
+                name: 'last_name',
+                message: 'Enter the last name of the new employee:',
+              },
+              {
+                type: 'input',
+                name: 'role_id',
+                message: 'Choose the role:',
+                choices: roles
+              },
+              {
+                type: 'list',
+                name: 'manager_id',
+                message: 'Choose the manager (leave blank for none):',
+                choices: managers,
+                when: answers.role_id > 0
+              },
+            ])
+            //then add the new employee to the database
+              .then((answers) => {
+                // If the manager_id is not blank, convert it to an integer
+                db.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [answers.first_name, answers.last_name, answers.role_id, answers.manager_id || answers.manager_id === '' ? null : answers.manager_id]).then(() => {
+                  console.log('Employee added successfully.');
+                  startingQuestion();
+                });
+              });
+          })
+        })
+        // 9.if the user chooses to update an employee role
+      } else if (answers.intro === 'Update an employee role') {
+        pool.query('SELECT * FROM employees').then((res) => {
+          const employees = res.rows.map((emp) => ({
+            name: emp.first_name + '' + emp.last_name,
+            value: emp.employee_id
+          }));
+          // use the map function to create an array of role objects for the choices
+          pool.query('SELECT * FROM roles').then((res) => {
+            const roles = res.rows.map((role) => ({
+              name: role.title,
+              value: role.roles_id
+            }));
+            //9. then prompt the user to enter the employee and role to update
+            inquirer.prompt([
+              {
+                type: 'list',
+                name: 'employee_id',
+                message: 'Choose the employee:',
+                choices: employees
+              },
+              {
+                type: 'list',
+                name: 'role_id',
+                message: 'Choose the new role:',
+                choices: roles
+              },
+            ])
+            //9. then update the employee's role in the database
+              .then((answers) => {
+                db.query('UPDATE employees SET role_id = $1 WHERE employee_id = $2', [answers.role_id, answers.employee_id]).then(() => {
+                  console.log('Employee role updated successfully.');
+                  startingQuestion();
+                });
+              });
 
-    startingQuestion();
+          })
+        })
+        // 10. if the user chooses to exit
+      } else if (answers.intro === 'Exit') {
+        console.log('Goodbye!');
+        // end the connection to the database
+        pool.end();
+      }
+    })
+};
 
-    // Close the database connection when the script ends
-    // pool.end();
 
-// TODO: Implement updating employee role
 
-      
+
       
 

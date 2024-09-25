@@ -8,34 +8,28 @@ CREATE DATABASE employee_db;
 \c employee_db
 
 --TODO: create tables for department, role and employee
-CREATE TABLE department (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(30) NOT NULL
+CREATE TABLE departments (
+    department_id SERIAL PRIMARY KEY,
+    name VARCHAR(30) UNIQUE NOT NULL
 );
 
-CREATE TABLE role (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE roles (
+    role_id SERIAL PRIMARY KEY,
     title VARCHAR(30) UNIQUE NOT NULL,
     salary DECIMAL NOT NULL,
-    salary DECIMAL,
-    department_id INT,
-    FOREIGN KEY (department_id)
-    REFERENCES department(id) 
-    ON DELETE CASCADE
+    department_id INTEGER NOT NULL,
+    FOREIGN KEY (department_id) REFERENCES departments(department_id)
 );
 
 
-CREATE TABLE employee (
-    id SERIAL PRIMARY KEY,
+
+CREATE TABLE employees (
+    employee_id SERIAL PRIMARY KEY, 
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    role_id INT,
-    manager_id INT,
-    FOREIGN KEY (role_id)
-    REFERENCES role(id), 
-    FOREIGN KEY (manager_id)
-    REFERENCES employee(id)
-    ON DELETE SET NULL
+    role_id INTEGER NOT NULL,
+    FOREIGN KEY (role_id) REFERENCES role(role_id),
+    manager_id INTEGER,
+    FOREIGN KEY (manager_id) REFERENCES employee(employee_id)
 );
-
 --TODO: add FOREIGN KEYS and REFERENCES to implenent other table
