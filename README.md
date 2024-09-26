@@ -7,12 +7,15 @@ SO THAT I can organize and plan my business
 
 ## USER INSTRUCTIONS
  1.Clone repo 
- 2.Install all dependencies by running npm i which will include inquirer@8.2.4 as well as pg by running npm i pg
+ 2.Install all dependencies by running npm i which will include inquirer@8.2.4 as well as pg by running npm i pg and your credentials in .env byt runnign npm i dotenv
  3.Open integrated terminal and start your database
  4. After starting database and verifying credentials run [ node index ] in integrated terminal
 
  ## Challenges
- When building this application some challenges I faced were not properly connecting the three tabled in schema with the PRIMARY KEY as well as not being able to set the proper propmpt for the user.
+ When building this application some challenges I faced were not properly connecting the seeds table in the schema.sql by not properly implementing the foreign keys. Another challenge I face was not running node index.js properly but then solved by calling the startinQuestion() function to start my prompt. And the last challenge was not keeping my db.query conssistent and was not getting the information properly from the server.
 
  ## Solutions
- For the solutions I had to do a lot of research on documentaion as well as reviewing lecture material. A big help was also youtube with videos providing detailed and a variety of examples.
+For my first solution I was not calling the FOREIGN KEY in the tables in schema.sql to connect all the different tables together. 
+For my second solution I needed to call my starting prompt to export the questions for the user at the bottom of my cose.
+And for the thirs solution I had pool.query and db.query and not keeping my code conssistent which was causing my prompt to not be able to connect to the database.
+
