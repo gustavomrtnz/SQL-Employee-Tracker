@@ -77,7 +77,7 @@ let startingQuestion = function() {
           // use the map function to create an array of department objects for the choices
           const departments = res.rows.map((dept) => ({
             name: dept.name,
-            value: dept.id
+            value: dept.department_id
           }));
           // prompt the user to enter the title of the new role, salary, and choose a department
           inquirer.prompt([
