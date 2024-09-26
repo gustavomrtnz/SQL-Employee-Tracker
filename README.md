@@ -23,23 +23,9 @@ SO THAT I can organize and plan my business
    npm i dotenv
    ```
  - 3.Open integrated terminal and start your database with PostgreSQL (download if needed)
- - 4. After downloading PostgreSQL create your database and install seeds values and the head over to the db folder on your terminal
-   5. run
-      ```bash
-      psql -U postgres
-      ```
-      then enter your password credentials and then start your database with
-      ```bash
-      \i schema.sql
-      ```
-      insert your seeds
-      ```bash
-      \i seeds.sql
-      ```
- - 4.After starting database and verifying credentials run [ node index ] in integrated terminal
-   ```bash
-   node index.js
-   ```
+ - 4. After downloading PostgreSQL create your database and install seeds values and the head over to the db folder on your terminal and create and starte your database as well as insert your values into your schema tables from seeds.sql
+ - 5.After starting database and verifying credentials run [ node index ] in integrated terminal
+
 
  ## Challenges
  When building this application some challenges I faced were not properly connecting the seeds table in the schema.sql by not properly implementing the foreign keys. Another challenge I face was not running node index.js properly but then solved by calling the startinQuestion() function to start my prompt. And the last challenge was not keeping my db.query conssistent and was not getting the information properly from the server.
