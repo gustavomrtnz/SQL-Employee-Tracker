@@ -73,7 +73,7 @@ let startingQuestion = function() {
           // if the user chooses to add a new role
       } else if (answers.intro === 'Add a new role') {
         // then prompt the user to enter the title of the new role, salary, and choose a department
-        pool.query('SELECT * FROM departments').then((res) => {
+        db.query('SELECT * FROM departments').then((res) => {
           // use the map function to create an array of department objects for the choices
           const departments = res.rows.map((dept) => ({
             name: dept.name,
