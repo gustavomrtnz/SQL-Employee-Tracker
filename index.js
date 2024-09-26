@@ -149,7 +149,7 @@ let startingQuestion = function() {
             //then add the new employee to the database
               .then((answers) => {
                 // If the manager_id is not blank, convert it to an integer
-                db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${answers.firs_tName}', '${answers.last_name}', ${answers.role_id}, ${answers.manager_id} )`).then(() => {
+                db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${answers.first_name}', '${answers.last_name}', ${answers.role_id}, ${answers.manager_id} )`).then(() => {
                   console.log('Employee added successfully.');
                   startingQuestion();
                 });
