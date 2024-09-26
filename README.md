@@ -15,7 +15,11 @@ SO THAT I can organize and plan my business
  - 2.Install all dependencies by running npm i which will include inquirer@8.2.4 as well as pg by running npm i pg and your credentials in .env byt runnign npm i dotenv
    ```bash
    npm i
+   ```
+   ```bash
    npm i pg
+   ```
+   ```bash
    npm i dotenv
    ```
  - 3.Open integrated terminal and start your database
