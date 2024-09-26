@@ -4,13 +4,15 @@ const { Pool } = require('pg');
 require('dotenv').config(); // Load environment variables from.env file
 
 // Connect to PostgreSQL database
-const pool = new Pool({ // Replace with your own credentials
+const db = new Pool({ // Replace with your own credentials
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   host: 'localhost',
   database: 'employee_db'
-});
-pool.connect()
+},
+  console.log(`Connected to the employee_db database.`)
+);
+db.connect()
 
 // Main function to handle user interactions
 let startingQuestion = function() {
@@ -36,7 +38,7 @@ let startingQuestion = function() {
         //then query the database for all departments and display them in a table
         db.query('SELECT * FROM departments').then((res) => {
           console.table(res.rows);
-          startingQuestion();
+          startingQuestion(); // return to the main menu after displaying the data
         });
         // if the user chooses to view all roles
       } else if (answers.intro === 'View all Roles') {
@@ -107,14 +109,14 @@ let startingQuestion = function() {
         })
         // 8. if the user chooses to add a new employee
       } else if (answers.intro === 'Add a new employee') {
-        pool.query('SELECT * FROM roles').then((res) => {
+        db.query('SELECT * FROM roles').then((res) => {
           // use the map function to create an array of role objects for the choices
           const roles = res.rows.map((role) => ({
             name: role.title,
             value: role.roles_id
           }));
           // use the map function to create an array of employee objects for the choices
-          pool.query('SELECT * FROM employees').then((res) => {
+          db.query('SELECT * FROM employees').then((res) => {
             const managers = res.rows.map((emp) => ({
               name: emp.first_name + '' + emp.last_name,
               value: emp.employee_id
@@ -157,13 +159,13 @@ let startingQuestion = function() {
         })
         // 9.if the user chooses to update an employee role
       } else if (answers.intro === 'Update an employee role') {
-        pool.query('SELECT * FROM employees').then((res) => {
+        db.query('SELECT * FROM employees').then((res) => {
           const employees = res.rows.map((emp) => ({
             name: emp.first_name + '' + emp.last_name,
             value: emp.employee_id
           }));
           // use the map function to create an array of role objects for the choices
-          pool.query('SELECT * FROM roles').then((res) => {
+          db.query('SELECT * FROM roles').then((res) => {
             const roles = res.rows.map((role) => ({
               name: role.title,
               value: role.roles_id
@@ -197,10 +199,12 @@ let startingQuestion = function() {
       } else if (answers.intro === 'Exit') {
         console.log('Goodbye!');
         // end the connection to the database
-        pool.end();
+        db.end();
       }
     })
 };
+
+startingQuestion();
 
 
 
