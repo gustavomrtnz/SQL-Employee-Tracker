@@ -43,14 +43,14 @@ let startingQuestion = function() {
         // if the user chooses to view all roles
       } else if (answers.intro === 'View all Roles') {
         //then query the database for all roles and display them in a table
-        db.query('SELECT * FROM roles').then((res) => {
+        db.query('SELECT * FROM role').then((res) => {
           console.table(res.rows);
           startingQuestion();
         });
           // if the user chooses to view all employees
       } else if (answers.intro === 'View all employees') {
         //then query the database for all employees and display them in a table
-        db.query('SELECT * FROM employees').then((res) => {
+        db.query('SELECT * FROM employee').then((res) => {
           console.table(res.rows);
           startingQuestion();
         });
@@ -77,7 +77,7 @@ let startingQuestion = function() {
           // use the map function to create an array of department objects for the choices
           const departments = res.rows.map((dept) => ({
             name: dept.name,
-            value: dept.departments_id
+            value: dept.id
           }));
           // prompt the user to enter the title of the new role, salary, and choose a department
           inquirer.prompt([
@@ -101,7 +101,7 @@ let startingQuestion = function() {
           )
           // then add the new role to the database
             .then((answers) => {
-              db.query('INSERT INTO roles (title, salary, department_id) VALUES ($1, $2, $3)', [answers.title, answers.salary, answers.department_id]).then(() => {
+              db.query('INSERT INTO role (title, salary, department_id) VALUES ($1, $2, $3)', [answers.title, answers.salary, answers.department_id]).then(() => {
                 console.log('Role added successfully.');
                 startingQuestion();
               });
@@ -109,14 +109,14 @@ let startingQuestion = function() {
         })
         // 8. if the user chooses to add a new employee
       } else if (answers.intro === 'Add a new employee') {
-        db.query('SELECT * FROM roles').then((res) => {
+        db.query('SELECT * FROM role').then((res) => {
           // use the map function to create an array of role objects for the choices
           const roles = res.rows.map((role) => ({
             name: role.title,
-            value: role.roles_id
+            value: role.role_id
           }));
           // use the map function to create an array of employee objects for the choices
-          db.query('SELECT * FROM employees').then((res) => {
+          db.query('SELECT * FROM employee').then((res) => {
             const managers = res.rows.map((emp) => ({
               name: emp.first_name + '' + emp.last_name,
               value: emp.employee_id
@@ -144,13 +144,12 @@ let startingQuestion = function() {
                 name: 'manager_id',
                 message: 'Choose the manager (leave blank for none):',
                 choices: managers,
-                when: answers.role_id > 0
               },
             ])
             //then add the new employee to the database
               .then((answers) => {
                 // If the manager_id is not blank, convert it to an integer
-                db.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [answers.first_name, answers.last_name, answers.role_id, answers.manager_id || answers.manager_id === '' ? null : answers.manager_id]).then(() => {
+                db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${answers.firs_tName}', '${answers.last_name}', ${answers.role_id}, ${answers.manager_id} )`).then(() => {
                   console.log('Employee added successfully.');
                   startingQuestion();
                 });
@@ -159,16 +158,16 @@ let startingQuestion = function() {
         })
         // 9.if the user chooses to update an employee role
       } else if (answers.intro === 'Update an employee role') {
-        db.query('SELECT * FROM employees').then((res) => {
+        db.query('SELECT * FROM employee').then((res) => {
           const employees = res.rows.map((emp) => ({
             name: emp.first_name + '' + emp.last_name,
             value: emp.employee_id
           }));
           // use the map function to create an array of role objects for the choices
-          db.query('SELECT * FROM roles').then((res) => {
+          db.query('SELECT * FROM role').then((res) => {
             const roles = res.rows.map((role) => ({
               name: role.title,
-              value: role.roles_id
+              value: role.role_id
             }));
             //9. then prompt the user to enter the employee and role to update
             inquirer.prompt([
@@ -187,7 +186,7 @@ let startingQuestion = function() {
             ])
             //9. then update the employee's role in the database
               .then((answers) => {
-                db.query('UPDATE employees SET role_id = $1 WHERE employee_id = $2', [answers.role_id, answers.employee_id]).then(() => {
+                db.query('UPDATE employee SET role_id = $1 WHERE employee_id = $2', [answers.role_id, answers.employee_id]).then(() => {
                   console.log('Employee role updated successfully.');
                   startingQuestion();
                 });
@@ -205,7 +204,6 @@ let startingQuestion = function() {
 };
 
 startingQuestion();
-
 
 
 
